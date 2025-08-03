@@ -1,1 +1,9 @@
 Django==4.2
+# asgiref
+# distlib
+# filelock
+# platformdirs
+# sqlparse
+# tzdata
+# virtualenv
+pillow
