@@ -2,15 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-class Genre(models.Model):
-    """
-    This Model represents a genre of books in the library.
-    Fields include name.
-    """
-    name = models.CharField(max_length=100, unique=True, blank=False, null=False)
-
-    def __str__(self):
-        return self.name
 
 
 class Book(models.Model):
@@ -21,7 +12,7 @@ class Book(models.Model):
     title = models.CharField(max_length=300)
     author = models.CharField(max_length=255)
     isbn = models.CharField(max_length=13, unique=True, blank=True, null=True)
-    genre = models.ManyToManyField(Genre, related_name='books')
+    genre = models.ManyToManyField("Genre", related_name='books')
     publisher = models.CharField(max_length=500)
     publication_year = models.PositiveIntegerField()
     language = models.CharField(max_length=155)
@@ -41,3 +32,16 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} by {self.author}"
+    
+
+
+
+class Genre(models.Model):
+    """
+    This Model represents a genre of books in the library.
+    Fields include name.
+    """
+    name = models.CharField(max_length=100, unique=True, blank=False, null=False)
+
+    def __str__(self):
+        return self.name

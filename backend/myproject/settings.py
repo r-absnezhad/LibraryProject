@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "library",
+    "ratings",
+    "loans",
+    "notifications",
+    
     
 ]
 
