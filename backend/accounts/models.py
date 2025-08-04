@@ -99,7 +99,7 @@ class Profile(models.Model):
     def generate_membership_code(self):
         if not self.membership_code:
             while True:
-                code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+                code = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
                 if not Profile.objects.filter(membership_code=code).exists():
                     self.membership_code = code
                     break
