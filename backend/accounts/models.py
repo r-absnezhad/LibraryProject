@@ -1,4 +1,7 @@
 from django.db import models
+import string, random
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, PermissionsMixin)
 # Create your models here.
@@ -58,3 +61,60 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+
+
+class Profile(models.Model):
+    """
+    This Model represents a User Profile.
+    It is linked to the CustomUser model through a OneToOneField.
+    """
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    GENDER_CHOICES = (
+    ('M', 'Male'),
+    ('F', 'Female'),
+    )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    image = models.ImageField(upload_to='profile_images/', default='defaults/none.png')
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    phone_number = models.CharField(max_length=15)
+    birth_date = models.DateField(blank=True, null=True)
+    membership_date = models.DateTimeField(auto_now_add=True)
+    membership_code = models.CharField(max_length=10, unique=True)
+    
+
+    created_date = models.DateField(auto_now_add=True)
+    updated_date = models.DateField(auto_now=True)
+
+    def set_default_profile_image(self): 
+        if self.gender == 'F':
+            self.image = 'defaults/female.png' 
+        elif self.gender == 'M':
+            self.image = 'defaults/male.png' 
+        else:
+            self.image = 'defaults/none.png'
+
+
+    def generate_membership_code(self):
+        if not self.membership_code:
+            while True:
+                code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+                if not Profile.objects.filter(membership_code=code).exists():
+                    self.membership_code = code
+                    break
+
+    def save(self, *args, **kwargs):
+        self.generate_membership_code()
+        self.set_default_profile_image()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.first_name + self.last_name}"
+    
+
+@receiver(post_save, sender= CustomUser)
+def save_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
