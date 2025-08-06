@@ -125,7 +125,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS = [BASE_DIR / 'statics',]
+STATICFILES_DIRS = [BASE_DIR / 'staticfiles',]
 
 # Media files (user-uploaded content)
 # https://docs.djangoproject.com/en/4.2/topics/files/

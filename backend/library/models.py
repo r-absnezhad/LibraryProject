@@ -16,7 +16,6 @@ class Book(models.Model):
     publisher = models.CharField(max_length=500)
     publication_year = models.PositiveIntegerField()
     language = models.CharField(max_length=155)
-    isbn = models.CharField(max_length=13, unique=True, blank=True, null=True)
     page_count = models.PositiveIntegerField()
     summary = models.TextField(blank=True, null=True)
     cover_image = models.ImageField(upload_to='book_covers/',blank=True, null=True)
