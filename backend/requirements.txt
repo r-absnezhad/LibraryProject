@@ -7,3 +7,6 @@ Django==4.2
 # tzdata
 # virtualenv
 pillow
+djangorestframework
+markdown       # Markdown support for the browsable API.
+django-filter  # Filtering support
