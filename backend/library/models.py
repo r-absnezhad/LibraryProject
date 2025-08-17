@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 
@@ -19,14 +19,14 @@ class Book(models.Model):
     page_count = models.PositiveIntegerField()
     summary = models.TextField(blank=True, null=True)
     cover_image = models.ImageField(upload_to='book_covers/',blank=True, null=True)
-    copies_total = models.PositiveIntegerField(default=1)
-    copies_available = models.PositiveIntegerField(default=1)
+    
 
     created_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
 
     # def average_rating(self):
     #     pass
+
 
 
     def __str__(self):

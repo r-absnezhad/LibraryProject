@@ -1,5 +1,9 @@
 {
     "cSpell.words": [
+        "bookserializer",
+        "bookserializers",
+        "genreserializer",
+        "genreserializers",
         "viewset"
     ]
 }

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "loans",
     "notifications",
     "rest_framework",
+    "django_filters",
     
     
 ]
@@ -140,4 +141,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # User manager config
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
