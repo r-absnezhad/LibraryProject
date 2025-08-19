@@ -24,8 +24,8 @@ class Book(models.Model):
     created_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
 
-    # def average_rating(self):
-    #     pass
+    def average_rating(self):
+        return self.reviews.aggregate(models.Avg("rating"))["rating__avg"] or 0
 
 
 
