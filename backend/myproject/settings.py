@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts",
-    "library",
-    "ratings",
+    "books",
     "loans",
     "notifications",
+    "reviews",
     "rest_framework",
     "django_filters",
     

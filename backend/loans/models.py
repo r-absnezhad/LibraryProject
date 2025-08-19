@@ -13,7 +13,7 @@ class Loan(models.Model):
     It also includes a foreign key to the user who borrowed the book.
     """
     profile = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE, related_name='loans')
-    book = models.ForeignKey("library.Book", on_delete=models.CASCADE, related_name='loans')
+    book = models.ForeignKey("books.Book", on_delete=models.CASCADE, related_name='loans')
     borrowed_at = models.DateField(auto_now_add=True)
     due_date = models.DateField()
     returned_at = models.DateField(null=True, blank=True)

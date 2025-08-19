@@ -6,6 +6,7 @@
         "genreserializers",
         "loanserializers",
         "notificationserializers",
+        "reviewserializers",
         "viewset",
         "ارسال",
         "ازای",

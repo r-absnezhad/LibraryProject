@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from ...models import Review
 from .permissions import IsAuthenticatedOrReadOnly
-from .serializers import ReviewSerializer
+from .reviewserializers import ReviewSerializer
 
 class ReviewModelViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()

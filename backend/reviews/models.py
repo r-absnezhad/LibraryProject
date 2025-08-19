@@ -1,5 +1,5 @@
 from django.db import models
-from library.models import Book
+from books.models import Book
 # Create your models here.
 
 class Review(models.Model):
@@ -16,7 +16,7 @@ class Review(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ("user", "book")  # هر کاربر فقط یه نظر روی یه کتاب بده
+        unique_together = ("profile", "book")  # هر کاربر فقط یه نظر روی یه کتاب بده
 
 
     def __str__(self):

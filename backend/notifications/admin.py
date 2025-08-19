@@ -12,7 +12,7 @@ class NotificationAdmin(admin.ModelAdmin):
     list_display = ["profile", "message", "is_read"]
     list_filter = ["is_read"]
     search_fields = ["Last_Name","First_Name"]
-    ordering = ["Last_Name","First_Name"]
+    ordering = ["profile__last_name","profile__first_name"]
     fieldsets = (
         ("Authentication", {"fields": ("First_Name", "Last_Name", "message")}),
     )  
