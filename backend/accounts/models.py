@@ -87,6 +87,14 @@ class Profile(models.Model):
     created_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)
 
+
+    def has_active_fines(self):
+        """بررسی اینکه کاربر جریمه فعالی دارد یا خیر"""
+        # همه Loan های این پروفایل که برگشت داده شده و fine_amount > 0
+        active_loans = self.loans.filter(returned_at__isnull=False, fine_amount__gt=0)
+        return active_loans.exists()
+    
+
     def set_default_profile_image(self): 
         if self.gender == 'F':
             self.image = 'defaults/female.png' 
