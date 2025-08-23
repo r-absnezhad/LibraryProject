@@ -1,6 +1,49 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
+from datetime import timedelta, datetime
 # Create your models here.
+
+
+
+
+class BookRequest(models.Model):
+    book = models.ForeignKey("books.Book", on_delete=models.CASCADE, related_name="requests")
+    profile = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE)
+    is_notified = models.BooleanField(default=False)
+    notified_at = models.DateTimeField(null=True, blank=True)
+    expired = models.BooleanField(default=False)
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    def check_expired(self):
+        if self.is_notified and self.notified_at:
+            if datetime.now() > self.notified_at + timedelta(hours=24):
+                self.expired = True
+                self.save()
+                return True
+        return False
+    
+
+    @classmethod
+    def notify_next_in_queue(cls, book):
+        next_request = cls.objects.filter(
+            book=book, expired=False, is_notified=False
+        ).order_by("created_date").first()
+
+        if next_request:
+            next_request.is_notified = True
+            next_request.notified_at = timezone.now()
+            next_request.save()
+            # اینجا مثلاً می‌تونی ایمیل بزنی
+            print(f"📢 اطلاع‌رسانی شد به {next_request.profile.user.email}")
+            return next_request
+        return None
+
+
+
+
+
 
 
 
@@ -19,6 +62,7 @@ class Book(models.Model):
     page_count = models.PositiveIntegerField()
     summary = models.TextField(blank=True, null=True)
     cover_image = models.ImageField(upload_to='book_covers/',blank=True, null=True)
+    is_available = models.BooleanField(default=True)
     
 
     created_date = models.DateField(auto_now_add=True)
@@ -34,7 +78,6 @@ class Book(models.Model):
     
 
 
-
 class Genre(models.Model):
     """
     This Model represents a genre of books in the library.
@@ -44,3 +87,4 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+    

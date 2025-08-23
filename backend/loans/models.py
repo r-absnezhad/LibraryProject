@@ -16,6 +16,7 @@ class Loan(models.Model):
     book = models.ForeignKey("books.Book", on_delete=models.CASCADE, related_name='loans')
     borrowed_at = models.DateField(auto_now_add=True)
     due_date = models.DateField()
+    is_returned = models.BooleanField(default=False)
     returned_at = models.DateField(null=True, blank=True)
     fine_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
@@ -81,3 +82,5 @@ class Loan(models.Model):
     def __str__(self):
         status = "Returned" if self.is_returned else "Borrowed"
         return f"{self.book.title} by {self.profile} ({status})"
+    
+

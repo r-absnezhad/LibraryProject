@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from celery.schedules import crontab
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -144,4 +145,14 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
+
+
+# Celery settings
+CELERY_BEAT_SCHEDULE = {
+    "process-expired-requests": {
+        "task": "books.tasks.process_expired_requests",
+        "schedule": crontab(hour=0, minute=0),
+    },
 }

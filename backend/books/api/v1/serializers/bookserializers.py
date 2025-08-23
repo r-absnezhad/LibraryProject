@@ -7,7 +7,7 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['title', 'author', 'isbn', 'genre', 'publisher', 'publication_year',
-                   'language', 'page_count', 'summary', 'cover_image', 'created_date', 'updated_date']
+                   'language', 'page_count', 'summary', "is_available", 'cover_image', 'created_date', 'updated_date']
         
 
     def to_representation(self, instance):
