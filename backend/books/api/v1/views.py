@@ -23,7 +23,10 @@ class BookRequestModelViewSet(viewsets.ModelViewSet):
     # pagination_class
 
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         book = serializer.validated_data["book"]
         profile = self.request.user.profile
 
@@ -34,7 +37,12 @@ class BookRequestModelViewSet(viewsets.ModelViewSet):
         if BookRequest.objects.filter(book=book, profile=profile, is_expired=False).exists():
             raise serializers.ValidationError("شما قبلاً برای این کتاب درخواست ثبت کرده‌اید.")
         
-        serializer.save(profile=profile)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        
+        def perform_create(self, serializer):
+            serializer.save(profile=self.request.user.profile)
 
 
 class BookModelViewSet(viewsets.ModelViewSet):

@@ -18,7 +18,7 @@ class LoanModelViewSet(viewsets.ModelViewSet):
     serializer_class = LoanSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ["is_returned"]
+    filterset_fields = ["is_returned",]
     search_fields = ['book__title', 'profile__last_name', 'profile__first_name']
     ordering_fields = ['borrowed_at', 'due_date', 'returned_at', 'book__title', 'profile__last_name',]
     # pagination_class

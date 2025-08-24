@@ -118,8 +118,8 @@ class Profile(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.first_name + self.last_name}"
-    
+        return f"{self.first_name + ' ' + self.last_name}"
+
 
 @receiver(post_save, sender= CustomUser)
 def save_profile(sender, instance, created, **kwargs):
