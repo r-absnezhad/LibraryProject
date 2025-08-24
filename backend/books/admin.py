@@ -14,12 +14,12 @@ class BookAdmin(admin.ModelAdmin):
 admin.site.register(Book, BookAdmin)
 class BookRequestAdmin(admin.ModelAdmin):
     model = BookRequest
-    list_display = ["book", "profile__last_name", "notified_at", "expired"]
-    list_filter = ["is_notified", "expired",]
+    list_display = ["book", "profile__last_name", "notified_at", "is_expired"]
+    list_filter = ["is_notified", "is_expired",]
     search_fields = ["book", "profile__last_name"]
     ordering = ["created_date", "book", "profile__last_name"]
     fieldsets = (
-        ("Details", {"fields": ("book", "profile", "notified_at", "expired",)}),
+        ("Details", {"fields": ("book", "profile", "notified_at", "is_expired",)}),
     )  
 admin.site.register(BookRequest, BookRequestAdmin)
 class GenreAdmin(admin.ModelAdmin):

@@ -13,7 +13,7 @@ class BookRequest(models.Model):
     profile = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE)
     is_notified = models.BooleanField(default=False)
     notified_at = models.DateTimeField(null=True, blank=True)
-    expired = models.BooleanField(default=False)
+    is_expired = models.BooleanField(default=False)
 
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -21,7 +21,7 @@ class BookRequest(models.Model):
     def check_expired(self):
         if self.is_notified and self.notified_at:
             if datetime.now() > self.notified_at + timedelta(hours=24):
-                self.expired = True
+                self.is_expired = True
                 self.save()
                 return True
         return False
@@ -30,7 +30,7 @@ class BookRequest(models.Model):
     @classmethod
     def notify_next_in_queue(cls, book):
         next_request = cls.objects.filter(
-            book=book, expired=False, is_notified=False
+            book=book, is_expired=False, is_notified=False
         ).order_by("created_date").first()
 
         if next_request:

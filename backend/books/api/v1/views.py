@@ -17,7 +17,7 @@ class BookRequestModelViewSet(viewsets.ModelViewSet):
     serializer_class = BookRequestSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['is_notified', 'expired']
+    filterset_fields = ['is_notified', 'is_expired']
     search_fields = ['book__title', 'profile__last_name', 'profile__first_name']
     ordering_fields = ['created_at', 'book__title', 'profile__last_name',]
     # pagination_class
@@ -31,7 +31,7 @@ class BookRequestModelViewSet(viewsets.ModelViewSet):
             return Response({"error": "این کتاب الان موجوده و نیاز به رزرو نیست."}, status=status.HTTP_400_BAD_REQUEST)
 
         # جلوگیری از ثبت درخواست تکراری
-        if BookRequest.objects.filter(book=book, profile=profile, expired=False).exists():
+        if BookRequest.objects.filter(book=book, profile=profile, is_expired=False).exists():
             raise serializers.ValidationError("شما قبلاً برای این کتاب درخواست ثبت کرده‌اید.")
         
         serializer.save(profile=profile)

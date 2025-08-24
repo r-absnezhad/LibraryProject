@@ -34,12 +34,12 @@ class LoanModelViewSet(viewsets.ModelViewSet):
         if not book.is_available:
             return Response({"error": f"کتاب {book.title} در دسترس نیست."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if BookRequest.objects.filter(book=book, expired=False, is_notified=False):
+        if BookRequest.objects.filter(book=book, is_expired=False, is_notified=False):
             profile = request.user.profile
-            req = BookRequest.objects.filter(book=book, profile=profile, is_notified=True, expired=False).first()
+            req = BookRequest.objects.filter(book=book, profile=profile, is_notified=True, is_expired=False).first()
             if not req:
                 return Response({"error": "شما در صف این کتاب نیستید یا فرصت شما تمام شده."}, status=status.HTTP_400_BAD_REQUEST)
-            req.expired = True
+            req.is_expired = True
             req.save()
             return Response({"detail": f"شما نفر اول در صف این کتاب هستید.کتاب {book.title} برای شما ثبت خواهد شد."}, status=status.HTTP_200_OK)
 
@@ -89,7 +89,7 @@ class LoanModelViewSet(viewsets.ModelViewSet):
             return Response({"error": "کتاب برگشت داده شده و قابل تمدید نیست."}, status=status.HTTP_400_BAD_REQUEST)
  
         active_request = BookRequest.objects.filter(
-            book=loan.book, is_notified=False, expired=False
+            book=loan.book, is_notified=False, is_expired=False
         ).exists()
 
         if active_request:
