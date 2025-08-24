@@ -35,13 +35,13 @@ class Loan(models.Model):
 
     # Properties
     @property
-    def is_returned(self):
+    def returned(self):
         return self.returned_at is not None
     
     @property
     def is_overdue(self):
         """بررسی دیرکرد"""
-        return not self.is_returned and timezone.now() > self.due_date
+        return not self.returned and timezone.now() > self.due_date
 
     # Methods 
     def calculate_fine(self, daily_rate=100):
@@ -75,7 +75,7 @@ class Loan(models.Model):
     def save(self, *args, **kwargs):
         # اگر due_date مشخص نشده، خودکار ۲ هفته از امروز تنظیم کن
         if not self.due_date:
-            self.due_date = timezone.now() + timedelta(days=14)
+            self.due_date = (timezone.now() + timedelta(days=14)).date()
         self.clean()
         super().save(*args, **kwargs)    
 

@@ -25,7 +25,8 @@ class LoanModelViewSet(viewsets.ModelViewSet):
 
 
     def create(self, request, *args, **kwargs):
-        book_id = request.data.get("book_id")
+        book_id = request.data.get("book")
+        profile = request.user.profile
         try:
             book = Book.objects.get(pk=book_id)
         except Book.DoesNotExist:
@@ -35,7 +36,6 @@ class LoanModelViewSet(viewsets.ModelViewSet):
             return Response({"error": f"کتاب {book.title} در دسترس نیست."}, status=status.HTTP_400_BAD_REQUEST)
 
         if BookRequest.objects.filter(book=book, is_expired=False, is_notified=False):
-            profile = request.user.profile
             req = BookRequest.objects.filter(book=book, profile=profile, is_notified=True, is_expired=False).first()
             if not req:
                 return Response({"error": "شما در صف این کتاب نیستید یا فرصت شما تمام شده."}, status=status.HTTP_400_BAD_REQUEST)
@@ -43,11 +43,13 @@ class LoanModelViewSet(viewsets.ModelViewSet):
             req.save()
             return Response({"detail": f"شما نفر اول در صف این کتاب هستید.کتاب {book.title} برای شما ثبت خواهد شد."}, status=status.HTTP_200_OK)
 
-
+        if Loan.objects.filter(profile=profile, book=book).exists():
+            return Response({"error": "شما قبلا این کتاب را قرض گرفته‌اید و هنوز برنگردانده‌اید."}, status=status.HTTP_400_BAD_REQUEST)
+        
         loan = Loan.objects.create(
             profile=profile,
             book=book,
-            due_date=timezone.now() + timedelta(days=14)
+            due_date=(timezone.now() + timedelta(days=14)).date()
         )
         book.is_available = False
         book.save()
@@ -62,10 +64,14 @@ class LoanModelViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def return_book(self, request, pk=None):
         loan = self.get_object()
+        print(loan)
+        book = loan.book
+        print(book)
         if loan.is_returned:
             return Response({"error": "این کتاب قبلا برگشت داده شده."}, status=status.HTTP_400_BAD_REQUEST)
-        loan.returned = True
+        loan.is_returned = True
         loan.returned_at = timezone.now()
+        
         loan.book.is_available = True
         loan.book.save()
         loan.save()
