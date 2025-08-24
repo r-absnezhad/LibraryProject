@@ -2,7 +2,7 @@ from django.db import models
 # from django.core.exceptions import ValidationError
 from datetime import timedelta, datetime
 from django.utils import timezone
-from ..notifications.models import Notification
+from notifications.models import Notification
 # Create your models here.
 
 
@@ -42,11 +42,6 @@ class BookRequest(models.Model):
             Notification.objects.create(profile=next_request.profile ,message=f"کتاب {next_request.book.title} برای شما رزرو شد. ۲۴ ساعت فرصت دارید." ,)
             return next_request
         return None
-
-
-
-
-
 
 
 

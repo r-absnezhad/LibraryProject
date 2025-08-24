@@ -17,9 +17,9 @@ class BookRequestModelViewSet(viewsets.ModelViewSet):
     serializer_class = BookRequestSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['book__title', 'is_notified', 'expired']
+    filterset_fields = ['is_notified', 'expired']
     search_fields = ['book__title', 'profile__last_name', 'profile__first_name']
-    ordering_fields = ['created_at', 'notified_at']
+    ordering_fields = ['created_at', 'book__title', 'profile__last_name',]
     # pagination_class
 
 
@@ -35,49 +35,6 @@ class BookRequestModelViewSet(viewsets.ModelViewSet):
             raise serializers.ValidationError("شما قبلاً برای این کتاب درخواست ثبت کرده‌اید.")
         
         serializer.save(profile=profile)
-
-
-
-
-        
-
-    # def create(self, request, pk=None):
-    #     book = Book.objects.get(pk=pk)
-    #     req = BookRequest.objects.create(book=book, user=request.user)
-    #     return Response(BookRequestSerializer(req).data, status=status.HTTP_201_CREATED)
-
-
-
-       # 📌 گرفتن کتاب بعد از نوتیف (۲۴ ساعت فرصت)
-    # @action(detail=True, methods=["post"])
-    # def borrow_after_request(self, request, pk=None):
-    #     book = Book.objects.get(pk=pk)
-    #     profile = request.user.profile
-    #     req = BookRequest.objects.filter(book=book, profile=profile, is_notified=True, expired=False).first()
-    #     if not req:
-    #         return Response({"error": "شما در صف این کتاب نیستید یا فرصت شما تمام شده."}, status=status.HTTP_400_BAD_REQUEST)
-
-    #     if req.notified_at and datetime.now() > req.notified_at + timedelta(hours=24):
-    #         req.expired = True
-    #         req.save()
-    #         return Response({"error": "مهلت شما برای گرفتن این کتاب تمام شد."}, status=status.HTTP_400_BAD_REQUEST)
-
-    #     loan = Loan.objects.create(
-    #         book=book,
-    #         user=request.user,
-    #         due_date=datetime.now() + timedelta(days=14)
-    #     )
-    #     book.is_available = False
-    #     book.save()
-    #     req.expired = True
-    #     req.save()
-    #     return Response(LoanSerializer(loan).data, status=status.HTTP_201_CREATED)
-
-
-
-
-
-
 
 
 class BookModelViewSet(viewsets.ModelViewSet):

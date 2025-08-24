@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, Genre
+from .models import Book, BookRequest,Genre
 # Register your models here.
 class BookAdmin(admin.ModelAdmin):
     model = Book
@@ -12,6 +12,16 @@ class BookAdmin(admin.ModelAdmin):
         ("Important Dates", {"fields": ("publication_year", )}),
     )  
 admin.site.register(Book, BookAdmin)
+class BookRequestAdmin(admin.ModelAdmin):
+    model = BookRequest
+    list_display = ["book", "profile__last_name", "notified_at", "expired"]
+    list_filter = ["is_notified", "expired",]
+    search_fields = ["book", "profile__last_name"]
+    ordering = ["created_date", "book", "profile__last_name"]
+    fieldsets = (
+        ("Details", {"fields": ("book", "profile", "notified_at", "expired",)}),
+    )  
+admin.site.register(BookRequest, BookRequestAdmin)
 class GenreAdmin(admin.ModelAdmin):
     model = Genre
     list_display = ["id","name"]
