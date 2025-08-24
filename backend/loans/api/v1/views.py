@@ -43,7 +43,7 @@ class LoanModelViewSet(viewsets.ModelViewSet):
             req.save()
             return Response({"detail": f"شما نفر اول در صف این کتاب هستید.کتاب {book.title} برای شما ثبت خواهد شد."}, status=status.HTTP_200_OK)
 
-        if Loan.objects.filter(profile=profile, book=book).exists():
+        if Loan.objects.filter(profile=profile, book=book, is_returned=False).exists():
             return Response({"error": "شما قبلا این کتاب را قرض گرفته‌اید و هنوز برنگردانده‌اید."}, status=status.HTTP_400_BAD_REQUEST)
         
         loan = Loan.objects.create(
@@ -64,21 +64,19 @@ class LoanModelViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def return_book(self, request, pk=None):
         loan = self.get_object()
-        print(loan)
         book = loan.book
-        print(book)
         if loan.is_returned:
             return Response({"error": "این کتاب قبلا برگشت داده شده."}, status=status.HTTP_400_BAD_REQUEST)
         loan.is_returned = True
         loan.returned_at = timezone.now()
         
-        loan.book.is_available = True
-        loan.book.save()
+        book.is_available = True
+        book.save()
         loan.save()
 
         # صف درخواست‌ها
         # همون لحظه نفر بعدی در صف نوتیف بشه
-        BookRequest.notify_next_in_queue(self.book)
+        BookRequest.notify_next_in_queue(book)
 
 
         # return Response(LoanSerializer(loan).data)
@@ -91,11 +89,12 @@ class LoanModelViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def renew(self, request, pk=None):
         loan = self.get_object()
-        if loan.returned:
+        book = loan.book
+        if loan.is_returned:
             return Response({"error": "کتاب برگشت داده شده و قابل تمدید نیست."}, status=status.HTTP_400_BAD_REQUEST)
  
         active_request = BookRequest.objects.filter(
-            book=loan.book, is_notified=False, is_expired=False
+            book=book, is_notified=False, is_expired=False
         ).exists()
 
         if active_request:

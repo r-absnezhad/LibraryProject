@@ -75,7 +75,7 @@ class Loan(models.Model):
     def save(self, *args, **kwargs):
         # اگر due_date مشخص نشده، خودکار ۲ هفته از امروز تنظیم کن
         if not self.due_date:
-            self.due_date = (timezone.now() + timedelta(days=14)).date()
+            self.due_date = (timezone.now() + timedelta(days=0)).date()
         self.clean()
         super().save(*args, **kwargs)    
 
