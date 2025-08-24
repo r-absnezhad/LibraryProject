@@ -8,7 +8,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .loanserializers import LoanSerializer
 from datetime import timedelta, datetime
 from django.utils import timezone
-# from .permissions import IsStaffOrReadOnly
+from .permissions import IsStaffOrReadOnly
 
 class LoanModelViewSet(viewsets.ModelViewSet):
 
@@ -17,7 +17,7 @@ class LoanModelViewSet(viewsets.ModelViewSet):
     """
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
-    # permission_classes = [IsStaffOrReadOnly]
+    permission_classes = [IsStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['book__title', 'returned_at', "is_returned"]
     search_fields = ['book__title', 'profile__last_name', 'profile__first_name']
