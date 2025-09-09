@@ -6,6 +6,10 @@ from notifications.models import Notification
 # Create your models here.
 
 
+def default_due_date():
+    return (timezone.now() + timedelta(days=0)).date()  # یا 14 روزه
+
+
 class Loan(models.Model):
     """
     This model represents a loan in the library.
@@ -15,7 +19,7 @@ class Loan(models.Model):
     profile = models.ForeignKey("accounts.Profile", on_delete=models.CASCADE, related_name='loans')
     book = models.ForeignKey("books.Book", on_delete=models.CASCADE, related_name='loans')
     borrowed_at = models.DateField(auto_now_add=True)
-    due_date = models.DateField()
+    due_date = models.DateField(default=default_due_date)  
     returned_at = models.DateField(null=True, blank=True)
     fine_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     is_returned = models.BooleanField(default=False)
@@ -72,12 +76,19 @@ class Loan(models.Model):
             raise ValidationError("کاربر جریمه فعال دارد و نمی‌تواند کتاب جدید قرض بگیرد.")
         
 
+    # def save(self, *args, **kwargs):
+    #     # اگر due_date مشخص نشده، خودکار ۲ هفته از امروز تنظیم کن
+    #     if not self.due_date :
+    #         self.due_date = (timezone.now() + timedelta(days=0)).date() 
+    #     self.clean()
+    #     super().save(*args, **kwargs) 
+    # 
     def save(self, *args, **kwargs):
-        # اگر due_date مشخص نشده، خودکار ۲ هفته از امروز تنظیم کن
+        """اگر due_date مشخص نشده، پیش‌فرض ست می‌کنه"""
         if not self.due_date:
-            self.due_date = (timezone.now() + timedelta(days=0)).date()
+            self.due_date = default_due_date()
         self.clean()
-        super().save(*args, **kwargs)    
+        super().save(*args, **kwargs)   
 
     def __str__(self):
         status = "Returned" if self.is_returned else "Borrowed"
