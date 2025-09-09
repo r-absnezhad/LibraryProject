@@ -85,8 +85,7 @@ class Loan(models.Model):
     # 
     def save(self, *args, **kwargs):
         """اگر due_date مشخص نشده، پیش‌فرض ست می‌کنه"""
-        if not self.due_date:
-            self.due_date = default_due_date()
+        self.due_date = default_due_date()
         self.clean()
         super().save(*args, **kwargs)   
 

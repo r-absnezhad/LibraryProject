@@ -7,7 +7,7 @@ class LoanSerializer(serializers.ModelSerializer):
         fields = ['id', 'profile', 'book', 'borrowed_at', 'due_date',
                   "is_returned", 'returned_at', 'fine_amount', 'created_date', 'updated_date']
         read_only_fields = ['profile', 'due_date', "is_returned",'returned_at', 'fine_amount', 'created_date', 'updated_date']
-
+    
 
     def to_representation(self, instance):
         if isinstance(instance, Loan):
