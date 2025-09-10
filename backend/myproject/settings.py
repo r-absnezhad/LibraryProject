@@ -153,6 +153,10 @@ REST_FRAMEWORK = {
 CELERY_BEAT_SCHEDULE = {
     "process-expired-requests": {
         "task": "books.tasks.process_expired_requests",
-        "schedule": crontab(hour=0, minute=0),
+        "schedule": 10.0,  # Every 10 seconds
+        # crontab(hour=0, minute=0)
     },
 }
+
+CELERY_BROKER_URL = "memory://"
+CELERY_RESULT_BACKEND = "rpc://"
